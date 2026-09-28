@@ -15,46 +15,6 @@ O objetivo deste projeto é adaptar o Batocera para inicializar e funcionar corr
 
 ---
 
-## Release disponível
-
-Imagem atual:
-
-```text
-batocera-h616-cb1-poc-44-20260928.img.gz
-```
-
-A imagem pode ser encontrada na página de releases:
-
-**https://github.com/aydasoft/batocera.bttpi/releases**
-
-### Gravar a imagem em um cartão SD
-
-Primeiro descompacte:
-
-```bash
-gzip -dk batocera-h616-cb1-poc-44-20260928.img.gz
-```
-
-Depois grave no cartão SD.
-
-Exemplo no Linux:
-
-```bash
-sudo dd if=batocera-h616-cb1-poc-44-20260928.img of=/dev/sdX bs=4M status=progress conv=fsync
-```
-
-> [!CAUTION]
-> Substitua `/dev/sdX` pelo dispositivo correto do cartão SD.  
-> Usar o dispositivo errado com `dd` pode apagar outro disco do computador.
-
-Você pode conferir os discos disponíveis com:
-
-```bash
-lsblk
-```
-
----
-
 ## Hardware alvo
 
 Este port é direcionado ao hardware **BTTPi / CB1**.
