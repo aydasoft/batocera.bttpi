@@ -1,0 +1,44 @@
+From: CB1 Batocera POC <cb1-poc@localhost>
+Subject: [PATCH] arm64: dts: add CB1 SD Batocera POC with built-in HDMI
+
+The already patched CB1 dtsi enables de, hdmi, hdmi_out and gpu. The CB1
+SD source in Armbian sunxi-7.2 only adds properties to disabled optional
+peripherals; no such overlays are needed here. Restore the original CB1
+GPU supply (DCDC1, vdd-gpu-sys). Enable only the H616 AHUB platform and
+HDMI machine nodes used by the Orange Pi Zero HDMI sound path.
+
+diff --git a/arch/arm64/boot/dts/allwinner/Makefile b/arch/arm64/boot/dts/allwinner/Makefile
+--- a/arch/arm64/boot/dts/allwinner/Makefile
++++ b/arch/arm64/boot/dts/allwinner/Makefile
+@@ -1,3 +1,4 @@
+ # SPDX-License-Identifier: GPL-2.0
++dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h616-bigtreetech-cb1-batocera.dtb
+ dtb-$(CONFIG_ARCH_SUNXI) += sun50i-a64-amarula-relic.dtb
+ dtb-$(CONFIG_ARCH_SUNXI) += sun50i-a64-bananapi-m64.dtb
+diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-cb1-batocera.dts b/arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-cb1-batocera.dts
+new file mode 100644
+--- /dev/null
++++ b/arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-cb1-batocera.dts
+@@ -0,0 +1,22 @@
++// SPDX-License-Identifier: (GPL-2.0+ or MIT)
++/* Experimental CB1 SD + Pi4B Adapter image; never apply the TFT overlay. */
++/dts-v1/;
++
++#include "sun50i-h616-bigtreetech-cb1.dtsi"
++
++&gpu {
++	mali-supply = <&reg_dcdc1>;
++	status = "okay";
++};
++
++&ahub_dam_plat {
++	status = "okay";
++};
++
++&ahub1_plat {
++	status = "okay";
++};
++
++&ahub1_mach {
++	status = "okay";
++};

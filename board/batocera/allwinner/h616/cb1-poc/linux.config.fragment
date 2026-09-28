@@ -1,0 +1,5 @@
+# AC300 is the PHY in the Armbian CB1 DTS; its driver requires OF and NVMEM.
+# Keep the PHY and its PWM clock available when the built-in MAC probes.
+CONFIG_AC300_PHY=y
+CONFIG_PWM_SUN4I=y
+CONFIG_PWM_SUNXI_ENHANCE=y

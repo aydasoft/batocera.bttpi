@@ -1,0 +1,13 @@
+include batocera-h616.board
+
+# Experimental CB1 + Pi4B Adapter SD image; never produce an Orange Pi image here.
+BR2_PACKAGE_BATOCERA_CB1_WIFI=y
+BR2_TARGET_BATOCERA_IMAGES="allwinner/h616/cb1-poc"
+BR2_LINUX_KERNEL_INTREE_DTS_NAME="allwinner/sun50i-h616-bigtreetech-cb1-batocera"
+BR2_ROOTFS_OVERLAY="$(BR2_EXTERNAL_BATOCERA_PATH)/board/batocera/fsoverlay $(BR2_EXTERNAL_BATOCERA_PATH)/board/batocera/allwinner/h616/fsoverlay $(BR2_EXTERNAL_BATOCERA_PATH)/board/batocera/allwinner/h616/cb1-poc/fsoverlay"
+BR2_LINUX_KERNEL_CONFIG_FRAGMENT_FILES="$(BR2_EXTERNAL_BATOCERA_PATH)/board/batocera/allwinner/h616/linux-defconfig-fragment.config $(BR2_EXTERNAL_BATOCERA_PATH)/board/batocera/allwinner/h616/cb1-poc/linux.config.fragment"
+
+# POC-A: the complete, proven Armbian CB1 SPL/U-Boot/BL31 is an input to genimage.
+# Do not silently build and flash the Orange Pi or an unvalidated CB1 bootloader.
+BR2_PACKAGE_UBOOT_MULTIBOARD=n
+BR2_PACKAGE_HOST_UBOOT_TOOLS=y

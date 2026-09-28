@@ -1,0 +1,119 @@
+#!/bin/sh
+
+wifi_enabled() {
+    config=/userdata/system/batocera.conf
+    [ -f "$config" ] || config=/boot/batocera-boot.conf
+    [ "$(/usr/bin/batocera-settings-get -f "$config" wifi.enabled 2>/dev/null)" = 1 ]
+}
+
+case "$1" in
+    start)
+        wifi_enabled || exit 0
+        "$0" recover &
+        exit 0
+        ;;
+    recover)
+        wifi_enabled || exit 0
+        ;;
+    *) exit 0 ;;
+esac
+
+log_recovery() {
+    printf 'CB1 Wi-Fi recovery: %s\n' "$1" > /dev/kmsg
+}
+
+wifi_powered() {
+    connmanctl technologies 2>/dev/null | awk '
+        $1 == "Type" && $2 == "=" { wifi = ($3 == "wifi"); next }
+        wifi && $1 == "Powered" && $2 == "=" { print $3; exit }
+    '
+}
+
+wifi_services() {
+    connmanctl services 2>/dev/null |
+        awk '$NF ~ /^wifi_/ { count++ } END { print count+0 }'
+}
+
+uptime_seconds() {
+    cut -d. -f1 /proc/uptime
+}
+
+scan_for_services() {
+    phase=$1
+    deadline=$(($(uptime_seconds) + 20))
+    for attempt in 1 2 3; do
+        remaining=$((deadline - $(uptime_seconds)))
+        [ "$remaining" -gt 0 ] || break
+        [ "$remaining" -gt 8 ] && remaining=8
+        timeout "$remaining" connmanctl scan wifi >/dev/null 2>&1
+        scan_status=$?
+        count=$(wifi_services)
+        log_recovery "$phase scan $attempt: wifi_services=$count"
+        [ "$count" -gt 0 ] && return 0
+        [ "$scan_status" -eq 124 ] && return 2
+        [ "$attempt" -eq 3 ] || sleep 0.5
+    done
+    return 1
+}
+
+log_recovery 'starting'
+if scan_for_services initial; then
+    log_recovery "success without reset: wifi_services=$count"
+    exit 0
+else
+    scan_status=$?
+fi
+if [ "$scan_status" -ne 1 ]; then
+    log_recovery 'final failure: initial scan did not complete'
+    exit 0
+fi
+
+wifi_enabled || exit 0
+count=$(wifi_services)
+if [ "$count" -gt 0 ]; then
+    log_recovery "success before reset: wifi_services=$count"
+    exit 0
+fi
+# Atomic boot-scoped guard, including if this init script is started again.
+mkdir /run/cb1-wifi-recovery-attempted 2>/dev/null || exit 0
+log_recovery 'starting technology reset'
+timeout 12 connmanctl disable wifi >/dev/null 2>&1
+
+disabled=0
+for transition in 1 2 3 4 5 6 7 8; do
+    state=$(wifi_powered)
+    [ "$state" = False ] && { disabled=1; break; }
+    if [ "$state" = True ]; then
+        count=$(wifi_services)
+        if [ "$count" -gt 0 ]; then
+            log_recovery "success after disable: wifi_services=$count"
+            exit 0
+        fi
+    fi
+    sleep 0.25
+done
+count=$(wifi_services)
+log_recovery "state after disable: $(wifi_powered); wifi_services=$count"
+
+if [ "$disabled" -ne 1 ]; then
+    log_recovery "final failure: no observed disabled state; wifi_services=$count"
+    exit 0
+fi
+
+wifi_enabled || exit 0
+if [ "$(wifi_powered)" = False ]; then
+    timeout 12 connmanctl enable wifi >/dev/null 2>&1
+fi
+state=$(wifi_powered)
+count=$(wifi_services)
+log_recovery "state after enable: $state; wifi_services=$count"
+if [ "$state" != True ]; then
+    log_recovery "final failure: technology not enabled; wifi_services=$count"
+    exit 0
+fi
+
+if scan_for_services after-reset; then
+    log_recovery "success after reset: wifi_services=$count"
+else
+    log_recovery "final failure after reset: wifi_services=$count"
+fi

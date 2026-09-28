@@ -1,0 +1,27 @@
+#!/bin/sh
+
+[ "$1" = start ] || exit 0
+# Do not report success when Batocera fell back to a RAM-only SHARE.
+grep -q ' /userdata ' /proc/mounts || exit 0
+grep -q ' /userdata tmpfs ' /proc/mounts && exit 0
+
+logs=/userdata/system/logs
+mkdir -p "$logs" || exit 0
+
+{
+    uname -a
+    tr '\000' '\n' </proc/device-tree/model
+    tr '\000' '\n' </proc/cmdline
+    dmesg
+} >"$logs/cb1-poc-dmesg.txt" 2>&1
+lsmod >"$logs/cb1-poc-lsmod.txt" 2>&1
+{
+    ls -l /dev/dri /sys/class/drm
+    for f in /sys/class/drm/*HDMI*/status /sys/class/drm/*HDMI*/modes; do
+        [ -f "$f" ] && { printf '%s\n' "$f"; cat "$f"; }
+    done
+    lsusb
+    lsblk
+    ip link
+} >"$logs/cb1-poc-drm.txt" 2>&1
+: >/userdata/system/CB1_POC_BOOTED

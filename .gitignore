@@ -1,4 +1,5 @@
 /output
+/output-container
 /dl
 /configs/batocera-*_defconfig
 /configs/batocera-board.local.common
@@ -35,3 +36,4 @@ typescript
 .ruff_cache
 .coverage
 *.mo
+/board/batocera/allwinner/h616/cb1-poc/u-boot-sunxi-with-spl.bin

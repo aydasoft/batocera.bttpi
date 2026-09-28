@@ -10,5 +10,6 @@ CARGO_C_LICENSE = MIT License
 CARGO_C_LICENSE_FILES = LICENSE
 
 HOST_CARGO_C_DEPENDENCIES = host-pkgconf host-rustc host-openssl
+HOST_CARGO_C_DOWNLOAD_POST_PROCESS_OPTS += -l$(BR2_EXTERNAL_BATOCERA_PATH)/package/batocera/utils-host/cargo-c/Cargo.lock
 
 $(eval $(host-cargo-package))
