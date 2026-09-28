@@ -1,23 +1,21 @@
-# Batocera BTTPi
+# Batocera BTT-Pi / CB1 da BIGTREETECH
 
 [![Batocera](https://img.shields.io/badge/Batocera-44-blue)](https://batocera.org/)
 [![Platform](https://img.shields.io/badge/Platform-Allwinner%20H616-orange)](#hardware-alvo)
 [![Board](https://img.shields.io/badge/Board-CB1%20%2F%20BTTPi-green)](#hardware-alvo)
 [![Status](https://img.shields.io/badge/Status-Experimental-yellow)](#status-do-projeto)
 
-Fork do **Batocera Linux** com suporte experimental ao **BTTPi / CB1**, baseado no SoC **Allwinner H616**.
-
-O objetivo deste projeto é adaptar o Batocera para inicializar e funcionar corretamente nesse hardware, mantendo as modificações específicas do BTTPi separadas do projeto upstream sempre que possível.
+Fork do **Batocera Linux** com suporte ao **BTT-Pi / CB1**, baseado no SoC **Allwinner H616**.
 
 > [!WARNING]
-> Este é um port **não oficial e experimental** do Batocera.  
+> Este é um port **não oficial** do Batocera.  
 > Use por sua conta e risco. Recursos ainda podem estar incompletos ou mudar entre versões.
 
 ---
 
 ## Hardware alvo
 
-Este port é direcionado ao hardware **BTTPi / CB1**.
+Este port é direcionado ao hardware **BTT-Pi / CB1**.
 
 | Componente | Hardware |
 |---|---|
@@ -50,15 +48,9 @@ O port está em desenvolvimento ativo.
 | GPU / aceleração gráfica | ✅ Integrada |
 | Estabilidade geral | 🧪 Em testes |
 
-Os estados acima representam o desenvolvimento atual do port e podem mudar conforme novos testes forem realizados.
-
 ---
 
 ## Principais alterações
-
-Este fork adiciona suporte específico ao BTTPi em diferentes partes do Batocera.
-
-### Board H616 / CB1
 
 Os principais arquivos estão em:
 
@@ -265,7 +257,7 @@ batocera-linux/batocera.linux
                               └── aydasoft/buildroot
 ```
 
-O objetivo é manter as mudanças específicas do BTTPi isoladas e facilitar a integração de atualizações futuras do Batocera.
+O objetivo é manter as mudanças específicas do BTT-Pi isoladas e facilitar a integração de atualizações futuras do Batocera.
 
 ---
 
@@ -290,24 +282,7 @@ Para buscar novas alterações:
 git fetch upstream
 ```
 
-Antes de integrar uma atualização do upstream, verifique também se houve mudança no commit do submódulo `buildroot`, pois as alterações específicas do BTTPi podem precisar ser reaplicadas sobre uma versão mais recente.
-
----
-
-## Desenvolvimento
-
-Contribuições, testes e relatórios são bem-vindos.
-
-Ao reportar um problema, se possível inclua:
-
-- modelo exato da placa;
-- versão da imagem utilizada;
-- saída serial/UART durante o boot;
-- `dmesg`;
-- comportamento esperado;
-- comportamento observado.
-
-Para este fork, prefira abrir uma issue contendo informações suficientes para reproduzir o problema.
+Antes de integrar uma atualização do upstream, verifique também se houve mudança no commit do submódulo `buildroot`, pois as alterações específicas do BTT-Pi podem precisar ser reaplicadas sobre uma versão mais recente.
 
 ---
 
@@ -321,7 +296,7 @@ Este projeto existe graças ao trabalho dos projetos e comunidades envolvidos, i
 - U-Boot;
 - desenvolvedores dos drivers e componentes utilizados pelo Allwinner H616 e pelo RTL8189FS/RTL8188F.
 
-As modificações específicas deste fork têm como objetivo adicionar suporte ao BTTPi / CB1 sem substituir ou ocultar o trabalho dos projetos originais.
+As modificações específicas deste fork têm como objetivo adicionar suporte ao BTT-Pi / CB1 sem substituir ou ocultar o trabalho dos projetos originais.
 
 ---
 
@@ -335,6 +310,6 @@ Consulte os arquivos de licença presentes no repositório e as licenças de cad
 
 ## Aviso
 
-**Batocera BTTPi não é uma versão oficial do Batocera Linux.**
+**Batocera BTT-Pi não é uma versão oficial do Batocera Linux.**
 
 O nome Batocera pertence ao respectivo projeto. Este repositório é um trabalho independente de adaptação para hardware não suportado oficialmente por este fork no momento de seu desenvolvimento.
